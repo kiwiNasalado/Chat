@@ -17,7 +17,14 @@ $config = [
             'cookieValidationKey' => 'l3IaDQYr7Ck7SJ_FvPWVzn0ppfZgtiO9',
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => 'yii\caching\MemCache',
+            'servers' => [
+                [
+                    'host' => '127.0.0.1',
+                    'port' => 11211,
+                    'weight' => 100,
+                ],
+            ],
         ],
         'user' => [
             'identityClass' => 'app\models\User',
@@ -56,6 +63,10 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/'                              => '/chat',
+                '/login'                         => '/chat/login',
+                '<module>/<controller>/<action>' => '<module>/<controller>/<action>',
+                '<controller>/<action>'          => '<controller>/<action>',
             ],
         ],
 

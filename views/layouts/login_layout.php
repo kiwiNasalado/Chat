@@ -3,14 +3,10 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-use app\assets\AppAsset;
-use app\widgets\Alert;
-use yii\bootstrap4\Breadcrumbs;
+use app\assets\AppAssetLogin;
 use yii\bootstrap4\Html;
-use yii\bootstrap4\Nav;
-use yii\bootstrap4\NavBar;
 
-AppAsset::register($this);
+AppAssetLogin::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -27,7 +23,7 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <main role="main" class="flex-shrink-0">
-    <div class="container" id="wrapper">
+    <div class="container">
         <?= $content ?>
     </div>
 </main>

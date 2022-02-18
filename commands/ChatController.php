@@ -2,7 +2,7 @@
 
 namespace app\commands;
 
-use app\models\Chat;
+use app\components\Chat;
 use Ratchet\Server\IoServer;
 use yii\console\Controller;
 use Ratchet\Http\HttpServer;
@@ -41,10 +41,5 @@ class ChatController extends Controller
         socket_close($sock);
 
         return $port;
-    }
-
-    private function savePort()
-    {
-
     }
 }

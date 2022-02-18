@@ -20,12 +20,16 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css',
+        'css/chatMain.css',
     ];
     public $js = [
+        'js/chat.js',
+        'js/external/bootbox/bootbox.min.js'
     ];
+    public $jsOptions = ['position' => \yii\web\View::POS_END];
+
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap4\BootstrapAsset',
+        'yii\bootstrap4\BootstrapPluginAsset',
     ];
 }
