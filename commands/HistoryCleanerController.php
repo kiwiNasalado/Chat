@@ -5,7 +5,6 @@ namespace app\commands;
 use app\models\activeRecord\Message;
 use app\models\Messages;
 use app\models\Rooms;
-use yii\console\Controller;
 use yii\helpers\Console;
 
 class HistoryCleanerController extends Command

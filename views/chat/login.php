@@ -1,10 +1,12 @@
 <?php
-/**
- * @var $form \app\models\LoginForm
- */
 
+use app\models\LoginForm;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
+
+/**
+ * @var $form LoginForm
+ */
 
 $this->registerCssFile('/css/login.css');
 ?>

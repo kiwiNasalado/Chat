@@ -20,7 +20,8 @@ class Message extends ActiveRecord
                     'sendAt',
                     'message',
                     'roomId',
-                    'ownerId'
+                    'ownerId',
+                    'isCommand',
                 ],
                 'safe'
             ]

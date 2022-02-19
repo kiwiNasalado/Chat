@@ -3,7 +3,6 @@
 namespace app\models;
 
 use app\extentions\traits\Singleton;
-use app\models\activeRecord\Client;
 use yii\db\Query;
 use app\models\activeRecord\ClientRoomDetails as CRDActiveRecord;
 
@@ -26,9 +25,9 @@ class ClientRoomDetails
     {
         CRDActiveRecord::deleteAll(['emailId' => $emailId, 'roomId' => $roomIds]);
         foreach ($roomIds as $roomId) {
-            $clientRoomDetails = new CRDActiveRecord();
-            $clientRoomDetails->emailId = $emailId;
-            $clientRoomDetails->roomId = $roomId;
+            $clientRoomDetails                   = new CRDActiveRecord();
+            $clientRoomDetails->emailId          = $emailId;
+            $clientRoomDetails->roomId           = $roomId;
             $clientRoomDetails->lastVisitDatetime = date('Y-m-d H:i:s', time());
             $clientRoomDetails->save();
         }

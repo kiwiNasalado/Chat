@@ -41,6 +41,7 @@ class m220212_092933_init_tables extends Migration
                 'message' => $this->string(255)->notNull(),
                 'roomId'  => $this->integer()->notNull(),
                 'ownerId' => $this->integer()->notNull(),
+                'isCommand' => $this->tinyInteger()->defaultValue(0)
             ],
         );
 

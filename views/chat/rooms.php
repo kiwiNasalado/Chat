@@ -1,9 +1,10 @@
 <?php
+
+use yii\helpers\Html;
+
 /**
  * @var array $rooms
  */
-
-use yii\helpers\Html;
 
 ?>
 <div id="plist" class="people-list" onscroll="updateRoomList($(this))" data-page="0">

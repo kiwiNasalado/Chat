@@ -11,7 +11,7 @@ class RoomAccesses
 {
     use Singleton;
 
-    public function getPrivateRooms(string $identifier)
+    public function getPrivateRooms(string $identifier): array
     {
         return (new Query())
             ->select('ra.roomId')

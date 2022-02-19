@@ -100,12 +100,16 @@ body{
   overflow-y: scroll;
 }
 
+.client-command {
+  background-color: burlywood;
+}
+
 .people-list {
   height: -webkit-fill-available;
   overflow-y: scroll;
 }
 
-li.single-message * :not(button) {
+li.single-message * :not(button):not(i) {
   background-color: aliceblue;
 }
 

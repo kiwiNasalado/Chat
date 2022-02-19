@@ -6,12 +6,6 @@ var isUpdating = false;
 $(document).ready(function () {
     identifier = $('.chat-app').data('identifier');
     enterChat();
-    setInterval(function() {
-        if (undefined == conn || conn.readyState !== WebSocket.OPEN) {
-            console.log('Trying to reconnect...');
-            enterChat();
-        }
-    }, 5000)
     resizeChat();
     $('.room').on('click', function () {
         enterRoom($(this))
@@ -27,7 +21,7 @@ $(document).ready(function () {
 
 function enterRoom(elem) {
     $('.room.active').removeClass('active');
-    elem.find('.badge').addClass('d-none');
+    elem.find('.badge').text('');
     elem.addClass('active');
     isUpdating = false;
     forceNoUpdate = false;
@@ -47,12 +41,14 @@ function enterRoom(elem) {
                 var html = prepareRoomHeader(data.room) +
                     prepareRoomChat(data.messages) +
                     prepareRoomSendMessage();
-                $('.chat').html('');
-                $('.chat').prepend(html)
+                var chat = $('.chat');
+                chat.html('');
+                chat.prepend(html)
                 $('#roomName').text(data.room.title)
                 setMessagesData(data.messages)
             }
             scrollDown(false)
+            $('#myMessage').focus()
         }
     });
 }
@@ -70,9 +66,10 @@ function signOut() {
 function updateChat(elem) {
     if (elem.scrollTop() <= 700 && !isUpdating && !forceNoUpdate) {
         isUpdating = true;
-        var roomId = $('.room.active').data('id');
+        var activeRoom = $('.room.active');
+        var roomId = activeRoom.data('id');
         $('.chat-app').data('room', roomId);
-        var page = $('.room.active').data('page');
+        var page = activeRoom.data('page');
         page++;
         $.ajax({
             url: '/chat/update-room',
@@ -144,8 +141,12 @@ function setMessagesData(data, setToOpened = false) {
             messageLi.removeClass('not-opened');
             messageLi.addClass('opened');
         }
-        messageLi.find('.sendAt').text(item.sendAt + ', ' + item.email + '  ').append(getCreateNewRoomBnt(item));
-        messageLi.find('.message-text').text(item.message);
+        if (1 != item.isCommand) {
+            messageLi.find('.sendAt').text(item.sendAt + ', ' + item.email + '  ').append(getCreateNewRoomBnt(item));
+            messageLi.find('.message-text').text(item.message);
+        } else {
+            messageLi.find('.client-command i').text(item.message);
+        }
     })
 }
 
@@ -209,6 +210,7 @@ function enterChat() {
                 '"}}'
             );
         } else {
+            console.log(data);
             setUnreadMessages(data[0].roomId)
         }
     };
@@ -217,7 +219,7 @@ function enterChat() {
 function setUnreadMessages(roomId, currentUnread = -1) {
     var spanUnread = $('.room[data-id="' + roomId + '"] .badge');
     if (-1 == currentUnread) {
-        var currentUnread = spanUnread.text();
+        currentUnread = spanUnread.text();
         currentUnread++;
     }
     if (currentUnread > 0) {
@@ -379,8 +381,35 @@ function processSystemResponse(systemResponse) {
         case 'appendPrivateRoom':
             appendNewRoom(systemResponse.value)
             break;
-
+        case 'connectionLimitReached':
+            console.log(systemResponse.value);
+            conn.close();
+            break;
+        case 'newConnection':
+            console.log(systemResponse.value);
+            conn.close;
+            break;
+        case 'clientCommandDate':
+            showDate(systemResponse.value);
+            break;
+        case 'clientCommandShowmembers':
+            showMembers(systemResponse.value);
+            break;
     }
+}
+
+function showDate(date) {
+    bootbox.alert({
+        message : "Current date: " + date,
+        backdrop: true,
+    });
+}
+
+function showMembers(members) {
+    bootbox.alert({
+        message : "Members in room: " + members,
+        backdrop: true,
+    });
 }
 
 function redirectToLogin() {
@@ -422,21 +451,27 @@ function prepareSingleMessage(item)
 {
     var message = '';
     message += '<li class="clearfix single-message ' + (1 == item.isOpened ? 'opened' : 'not-opened') + '" data-messageId="' + item.id + '">';
-    if (item.identifier == identifier) {
-        message += '<div class="message-data text-right">';
+    if (1 != item.isCommand) {
+        if (item.identifier == identifier) {
+            message += '<div class="message-data text-right">';
+        } else {
+            message += '<div class="message-data">';
+        }
+
+        message += '<span class="message-data-time sendAt"></span></div>';
+
+        if (item.identifier == identifier) {
+            message += '<div class="message other-message float-right message-text">';
+        } else {
+            message += '<div class="message other-message message-text">';
+        }
+
+        message += '</div>'
     } else {
-        message += '<div class="message-data">';
+        message += '<div class="client-command text-center"><i></i></div>';
     }
 
-    message += '<span class="message-data-time sendAt"></span></div>';
-
-    if (item.identifier == identifier) {
-        message += '<div class="message other-message float-right message-text">';
-    } else {
-        message += '<div class="message other-message message-text">';
-    }
-
-    message += '</div></li>';
+    message += '</li>';
 
     return message;
 }

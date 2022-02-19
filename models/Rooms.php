@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use app\extentions\traits\Cache;
 use app\extentions\traits\Singleton;
 use app\models\activeRecord\Client;
 use app\models\activeRecord\Room;
@@ -69,19 +68,19 @@ class Rooms
         return in_array($roomId, $allowedRooms);
     }
 
-    public function createPrivateRoom(Client $client1, Client $client2): array
+    public function createPrivateRoom(\app\components\Client $client1, Client $client2): array
     {
-        $room = new Room();
-        $room->title = $client1->email . ', ' . $client2->email;
-        $room->identifier = $this->generateIdentifier($client1->email, $client2->email);
-        $room->isPublic = self::IS_PRIVATE;
-        $room->historyDaysLimit = self::DEFAULT_HISTORY_DAYS_LIMIT;
+        $room                       = new Room();
+        $room->title                = $client1->getEmail() . ', ' . $client2->email;
+        $room->identifier           = $this->generateIdentifier($client1->getEmail(), $client2->email);
+        $room->isPublic             = self::IS_PRIVATE;
+        $room->historyDaysLimit     = self::DEFAULT_HISTORY_DAYS_LIMIT;
         $room->historyMessagesLimit = self::DEFAULT_HISTORY_MESSAGES_LIMIT;
         $room->save();
-        foreach ([$client1->id, $client2->id] as $emailId) {
-            $roomAccess = new RoomAccess();
+        foreach ([$client1->getId(), $client2->id] as $emailId) {
+            $roomAccess          = new RoomAccess();
             $roomAccess->emailId = $emailId;
-            $roomAccess->roomId = $room->id;
+            $roomAccess->roomId  = $room->id;
             $roomAccess->save();
         }
         return $room->toArray();
@@ -97,7 +96,7 @@ class Rooms
             ->one();
     }
 
-    public function generateIdentifier(string $email1, string $email2)
+    public function generateIdentifier(string $email1, string $email2): string
     {
         $emailsArray = [$email1, $email2];
         sort($emailsArray);

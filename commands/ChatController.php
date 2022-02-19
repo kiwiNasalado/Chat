@@ -15,7 +15,6 @@ class ChatController extends Controller
     {
         $port = $this->getFreePort();
         $redis = new Connection();
-        /*3rd parameter expireTime depends on how command will work*/
         $redis->set(Chat::CHAT_PORT_REDIS_KEY, $port);
         try {
             $server = IoServer::factory(

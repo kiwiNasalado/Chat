@@ -4,9 +4,7 @@ namespace app\controllers;
 
 use app\components\Chat;
 use app\models\activeRecord\Client;
-use app\models\activeRecord\ClientRoomDetails;
 use app\models\ClientRoomDetails as CRDModel;
-use app\models\activeRecord\Message;
 use app\models\activeRecord\Room;
 use app\models\Clients;
 use app\models\LoginForm;
@@ -39,6 +37,10 @@ class ChatController extends Controller
         $identifier = Yii::$app->getRequest()->get('identifier');
 
         if (empty($identifier)) {
+            return $this->redirect('/chat/login');
+        }
+        $client = Client::findOne(['identifier' => $identifier]);
+        if (null === $client) {
             return $this->redirect('/chat/login');
         }
 
@@ -140,7 +142,7 @@ class ChatController extends Controller
 
                 $rooms = array_column(Rooms::getInstance()->getAllowedRooms($identifier), 'id');
 
-                \app\models\ClientRoomDetails::getInstance()->setLastVisitDatetime($client->id, $rooms);
+                CRDModel::getInstance()->setLastVisitDatetime($client->id, $rooms);
             }
             $this->redirect('/?identifier=' . $client->identifier);
         }

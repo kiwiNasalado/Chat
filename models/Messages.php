@@ -7,7 +7,6 @@ use app\models\activeRecord\Client;
 use app\models\activeRecord\Message;
 use app\models\activeRecord\Room;
 use app\models\activeRecord\ClientRoomDetails as crdAR;
-use app\models\activeRecord\RoomAccess;
 use yii\db\Query;
 
 class Messages
@@ -88,5 +87,17 @@ class Messages
             ])
             ->andWhere(['<>', 'm.ownerId', $emailId])
             ->count();
+    }
+
+    public function addMessage(array $data): array
+    {
+        $newNessage            = new Message();
+        $newNessage->sendAt    = date('Y-m-d H:i:s');
+        $newNessage->message   = $data['message'];
+        $newNessage->roomId    = $data['roomId'];
+        $newNessage->ownerId   = $data['ownerId'];
+        $newNessage->isCommand = $data['isCommand'] ?? 0;
+        $newNessage->save();
+        return $newNessage->toArray();
     }
 }

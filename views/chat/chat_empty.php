@@ -6,7 +6,6 @@
         </div>
     </div>
     <div class="chat-history no-scroll">
-
     </div>
     <div class="chat-message clearfix">
     </div>

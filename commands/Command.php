@@ -16,7 +16,7 @@ class Command extends Controller
         parent::init();
     }
 
-    public function isShouldTerminate()
+    public function isShouldTerminate(): bool
     {
         return time() > ($this->startTime + $this->croneTimeout);
     }
