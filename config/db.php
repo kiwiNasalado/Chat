@@ -2,9 +2,10 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=127.0.0.1;dbname=phonexa_chat_2',
+    'dsn' => 'mysql:host=10.5.0.7;dbname=phonexa_chat',
+    'emulatePrepare' => true,
     'username' => 'root',
-    'password' => '24867913',
+    'password' => 'root',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)
