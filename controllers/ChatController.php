@@ -11,32 +11,18 @@ use app\models\LoginForm;
 use app\models\Messages;
 use app\models\Rooms;
 use Yii;
-use yii\redis\Connection;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class ChatController extends Controller
 {
-    private ?string $chatPort = null;
-
-    public function beforeAction($action)
-    {
-        $action = parent::beforeAction($action);
-
-        $redis = new Connection();
-        $this->chatPort = $redis->get(Chat::CHAT_PORT_REDIS_KEY);
-        if (null === $this->chatPort) {
-            return $this->redirect('/');
-        }
-        return $action;
-    }
 
     public function actionIndex()
     {
         $identifier = Yii::$app->getRequest()->get('identifier');
 
-        if (empty($identifier)) {
+        if (Chat::getIsPortFree() || empty($identifier)) {
             return $this->redirect('/chat/login');
         }
         $client = Client::findOne(['identifier' => $identifier]);
@@ -48,7 +34,7 @@ class ChatController extends Controller
         return $this->render(
             'index',
             [
-                'chatPort'   => $this->chatPort,
+                'chatPort'   => Chat::CHAT_PORT,
                 'identifier' => $identifier,
                 'rooms'      => $rooms
             ]);
@@ -68,6 +54,7 @@ class ChatController extends Controller
             $room = $room->toArray();
         }
         if (
+            Chat::getIsPortFree() ||
             empty($id) ||
             empty($identifier) ||
             (
@@ -97,6 +84,7 @@ class ChatController extends Controller
             $room = $room->toArray();
         }
         if (
+            Chat::getIsPortFree() ||
             $page <= 0 ||
             empty($id) ||
             empty($identifier) ||
@@ -119,6 +107,9 @@ class ChatController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $identifier = Yii::$app->getRequest()->get('identifier', '');
         $page       = Yii::$app->getRequest()->get('page', 0);
+        if (Chat::getIsPortFree()) {
+            return '';
+        }
 
         $rooms = Rooms::getInstance()->getAllowedRooms($identifier, $page);
 
@@ -147,6 +138,6 @@ class ChatController extends Controller
             $this->redirect('/?identifier=' . $client->identifier);
         }
 
-        return $this->render('login', ['form' => $form]);
+        return $this->render('login', ['form' => $form, 'isChatOnline' => !Chat::getIsPortFree()]);
     }
 }

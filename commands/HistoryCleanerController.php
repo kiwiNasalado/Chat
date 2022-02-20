@@ -35,7 +35,7 @@ class HistoryCleanerController extends Command
             }
         }while(!empty($rooms));
 
-        $this->stdout("Cron finished its work successfully!\n");
+        $this->stdout("Cleaner finished its work successfully!\n");
 
     }
 

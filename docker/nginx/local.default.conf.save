@@ -1,0 +1,25 @@
+server {
+   listen 80;
+   listen [::]:80;
+
+   server_name .xyz;
+
+   root /var/www/phonexaChat/web;
+   index index.php;
+
+   location / {
+       try_files $uri $uri/ /index.php$is_args$args;
+   }
+
+  
+   location ~ \.php$ {
+       include fastcgi_params;
+       fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+       fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+       try_files $uri =404;
+   }
+
+   location ~ /\.(ht|svn|git) {
+       deny all;
+   }
+}

@@ -7,10 +7,11 @@ use app\models\Messages;
 use app\models\Rooms;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
+use yii\redis\Connection;
 
 class Chat implements MessageComponentInterface
 {
-    public const CHAT_PORT_REDIS_KEY = 'CHAT_PORT';
+    public const CHAT_PORT           = 2135;
     public const SYSTEM_RESPONSE_KEY = 'systemResponse';
     public const CONNECTIONS_LIMIT   = 1000;
 
@@ -399,5 +400,20 @@ class Chat implements MessageComponentInterface
              */
             $room->removeClient($identifier);
         }
+    }
+
+
+
+    public static function getIsPortFree(): bool
+    {
+        $isFree = true;
+        try {
+            $sock = socket_create_listen(Chat::CHAT_PORT);
+            socket_close($sock);
+        } catch (\Exception $e) {
+            $isFree = false;
+        }
+
+        return  $isFree;
     }
 }

@@ -54,16 +54,29 @@ Go to **/var/www/your_project_name/docker** and run docker build
 
     docker-compose build
 
+While docker is building, go to **/etc** and add to **hosts** file next line
+
+    10.5.0.8       you_site_name.xyz
+
 Start the container inside the **/var/www/your_project_name/docker**
 
     docker-compose up -d
 
-Start the ChatServer from the **/var/www/your_project_name**
+Apply migrations inside the **/var/www/your_project_name**
 
+    ./yii migrate
+
+Open php-chat container shell from the **docker** folder inside you project and start the ChatServer
+
+    docker-compose exec php-chat bash
     ./yii chat/start
+
 
 ADDITIONAL
 -------------
+To avoid additional problems with access rights - give the current user rights to view and edit the **/var/www/your_project_name** folder
+
+
 To run the ChatHistoryCleaner go to the **/var/www/your_project_name** and run
 
     ./yii history-cleaner/clean

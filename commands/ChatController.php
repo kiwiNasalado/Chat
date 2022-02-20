@@ -7,38 +7,24 @@ use Ratchet\Server\IoServer;
 use yii\console\Controller;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
-use yii\redis\Connection;
 
 class ChatController extends Controller
 {
     public function actionStart()
     {
-        $port = $this->getFreePort();
-        $redis = new Connection();
-        $redis->set(Chat::CHAT_PORT_REDIS_KEY, $port);
-        try {
+        if (Chat::getIsPortFree()) {
             $server = IoServer::factory(
                 new HttpServer(
                     new WsServer(
                         new Chat()
                     )
                 ),
-                $port
+                Chat::CHAT_PORT
             );
-            $this->stdout("Server is up and running on port:" . $port . "\n");
+            $this->stdout("Server is up and running on port:" . Chat::CHAT_PORT . "\n");
             $server->run();
-        } catch (\Exception $e) {
-            $this->stdout($e->getMessage() . "\n");
-            $redis->close();
+        } else {
+            $this->stdout("Server is already up and running!\n");
         }
-    }
-
-    private function getFreePort()
-    {
-        $sock = socket_create_listen(0);
-        socket_getsockname($sock, $addr, $port);
-        socket_close($sock);
-
-        return $port;
     }
 }

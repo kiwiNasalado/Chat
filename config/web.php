@@ -20,7 +20,7 @@ $config = [
             'class' => 'yii\caching\MemCache',
             'servers' => [
                 [
-                    'host' => '127.0.0.1',
+                    'host' => '10.5.0.11',
                     'port' => 11211,
                     'weight' => 100,
                 ],
@@ -51,7 +51,7 @@ $config = [
         ],
         'redis'         => [
             'class'    => 'yii\redis\Connection',
-            'hostname' => 'localhost',
+            'hostname' => '10.5.0.10',
             'port'     => 6379,
             'database' => 0,
         ],
@@ -80,7 +80,7 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '10.5.0.8'],
     ];
 
     $config['bootstrap'][] = 'gii';

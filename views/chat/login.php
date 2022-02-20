@@ -6,9 +6,11 @@ use yii\helpers\Html;
 
 /**
  * @var $form LoginForm
+ * @var $isChatOnline bool
  */
 
 $this->registerCssFile('/css/login.css');
+
 ?>
 <div class="container d-flex justify-content-center">
     <div class="d-flex flex-column justify-content-between">
@@ -21,9 +23,10 @@ $this->registerCssFile('/css/login.css');
             </div>
         </div>
         <div class="card two bg-white px-5 py-4 mb-3">
-            <?php $builder = ActiveForm::begin(); ?>
+            <?php if ($isChatOnline) {
+                $builder = ActiveForm::begin();
 
-            <?= $builder->field(
+            echo$builder->field(
                     $form,
                     'email',
             ) ?>
@@ -32,7 +35,11 @@ $this->registerCssFile('/css/login.css');
                 <?= Html::submitButton('Get Started', ['class' => 'btn btn-primary btn-block btn-lg mt-1 mb-2']) ?>
             </div>
 
-            <?php ActiveForm::end(); ?>
+            <?php
+                ActiveForm::end();
+            } else { ?>
+                <p>Chat is currently offline</p>
+            <?php }?>
         </div>
     </div>
 </div>

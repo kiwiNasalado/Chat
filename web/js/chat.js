@@ -182,7 +182,7 @@ function updateRoomsUnreadMessages() {
 
 function enterChat() {
     var port = $('.chat-app').data('port');
-    conn = new WebSocket('ws://localhost:' + port + '?identifier=' + identifier);
+    conn = new WebSocket('ws://10.5.0.9:' + port + '?identifier=' + identifier);
 
     conn.onopen = function (e) {
         updateRoomsUnreadMessages()
@@ -192,7 +192,7 @@ function enterChat() {
     };
 
     conn.onerror = function(e) {
-        console.log("Something went wrong...");
+        redirectToLogin();
     }
 
     conn.onmessage = function (e) {
@@ -388,6 +388,7 @@ function processSystemResponse(systemResponse) {
         case 'newConnection':
             console.log(systemResponse.value);
             conn.close;
+            redirectToLogin();
             break;
         case 'clientCommandDate':
             showDate(systemResponse.value);
